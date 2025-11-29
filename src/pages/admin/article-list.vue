@@ -104,7 +104,7 @@
                     <MdEditor v-model="form.content" @onUploadImg="onUploadImg" editorId="publishArticleEditor" />
                 </el-form-item>
                 <el-form-item label="封面" prop="cover">
-                    <el-upload class="avatar-uploader" action="#" :on-change="handleCoverChange" :auto-upload="false"
+                    <el-upload class="avatar-uploader cover-drop" action="#" :on-change="handleCoverChange" :auto-upload="false"
                         :show-file-list="false">
                         <img v-if="form.cover" :src="form.cover" class="avatar" />
                         <el-icon v-else class="avatar-uploader-icon">
@@ -169,7 +169,7 @@
                         editorId="updateArticleEditor" />
                 </el-form-item>
                 <el-form-item label="封面" prop="cover">
-                    <el-upload class="avatar-uploader" action="#" :on-change="handleUpdateCoverChange" :auto-upload="false"
+                    <el-upload class="avatar-uploader cover-drop" action="#" :on-change="handleUpdateCoverChange" :auto-upload="false"
                         :show-file-list="false">
                         <img v-if="updateArticleForm.cover" :src="updateArticleForm.cover" class="avatar" />
                         <el-icon v-else class="avatar-uploader-icon">
@@ -563,6 +563,20 @@ const goArticleDetailPage = (articleId) => {
     width: 200px;
     height: 100px;
     display: block;
+}
+
+.cover-drop {
+    border: 1px dashed rgba(99, 102, 241, 0.35);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(14, 165, 233, 0.08));
+    border-radius: 18px;
+    padding: 8px;
+    transition: all 0.2s ease;
+}
+
+.cover-drop:hover {
+    border-color: rgba(99, 102, 241, 0.6);
+    box-shadow: 0 12px 30px rgba(99, 102, 241, 0.12);
+    transform: translateY(-2px);
 }
 
 .el-icon.avatar-uploader-icon {
