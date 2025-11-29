@@ -1,47 +1,71 @@
 <template>
-    <!-- 使用 grid 网格布局，并指定列数为 2，高度占满全屏 -->
-    <div class="grid grid-cols-2 h-screen">
-        <!-- 默认占两列，order 用于指定排列顺序，md 用于适配非移动端（PC 端） -->
-        <div class="col-span-2 order-2 p-10 md:col-span-1 md:order-1 bg-slate-900">
-            <!-- 指定为 flex 布局，并设置为屏幕垂直水平居中，高度为 100% -->
-            <div
-                class="flex justify-center items-center h-full flex-col animate__animated animate__bounceInLeft animate__fast">
-                <h2 class="font-bold text-4xl mb-7 text-white">Weblog 博客登录</h2>
-                <p class="text-white">一款由 Spring Boot + Mybaits Plus + Vue 3.2 + Vite 4 开发的前后端分离博客。</p>
-                <!-- 指定图片宽度为父级元素的 1/2 -->
-                <img src="@/assets/developer.png" class="w-1/2">
-            </div>
-        </div>
-        <div class="col-span-2 order-1 md:col-span-1 md:order-2 bg-white">
-            <!-- flex-col 用于指定子元素垂直排列 -->
-            <div
-                class="flex justify-center items-center h-full flex-col animate__animated animate__bounceInRight animate__fast">
-                <!-- 大标题，设置字体粗细、大小、下边距 -->
-                <h1 class="font-bold text-4xl mb-5">欢迎回来</h1>
-                <!-- 设置 flex 布局，内容垂直水平居中，文字颜色，以及子内容水平方向 x 轴间距 -->
-                <div class="flex items-center justify-center mb-7 text-gray-400 space-x-2">
-                    <!-- 左边横线，高度为 1px, 宽度为 16，背景色设置 -->
-                    <span class="h-[1px] w-16 bg-gray-200"></span>
-                    <span>账号密码登录</span>
-                    <!-- 右边横线 -->
-                    <span class="h-[1px] w-16 bg-gray-200"></span>
+    <div class="relative min-h-screen overflow-hidden bg-slate-950 text-white">
+        <div class="absolute inset-0 opacity-70 bg-[radial-gradient(circle_at_10%_20%,rgba(52,211,153,0.12),transparent_40%),radial-gradient(circle_at_90%_15%,rgba(79,70,229,0.16),transparent_45%),radial-gradient(circle_at_40%_80%,rgba(56,189,248,0.12),transparent_40%)]"></div>
+        <div class="absolute inset-x-10 top-20 h-[520px] rounded-[36px] bg-gradient-to-r from-slate-900/80 via-slate-900/50 to-slate-900/80 blur-3xl"></div>
+
+        <div class="relative z-10 flex min-h-screen items-center justify-center px-4">
+            <div class="grid w-full max-w-6xl grid-cols-1 gap-8 rounded-[32px] border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl md:grid-cols-2 md:p-10">
+                <div class="flex flex-col justify-between space-y-6 border-b border-white/5 pb-6 md:border-b-0 md:border-r md:pb-0 md:pr-8">
+                    <div class="space-y-4">
+                        <div class="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-4 py-2 text-emerald-100 ring-1 ring-emerald-400/30">
+                            <span class="h-2 w-2 rounded-full bg-emerald-300 animate-pulse"></span>
+                            实时守护 · 智能运营
+                        </div>
+                        <h1 class="text-4xl font-bold leading-tight">欢迎回到 Weblog</h1>
+                        <p class="text-base text-slate-200/80">以 ChatGPT / Gemini 风格重塑的后台，带来更流畅、更沉浸的管理体验。继续登录，开启你的灵感空间。</p>
+                        <div class="grid grid-cols-2 gap-3 text-sm text-slate-200/80">
+                            <div class="rounded-2xl border border-white/5 bg-white/5 p-4 shadow-inner shadow-emerald-500/10">
+                                <p class="font-semibold text-white">无缝写作</p>
+                                <p class="text-slate-300/80">沉浸式编辑、随时保存。</p>
+                            </div>
+                            <div class="rounded-2xl border border-white/5 bg-white/5 p-4 shadow-inner shadow-indigo-500/10">
+                                <p class="font-semibold text-white">素材中心</p>
+                                <p class="text-slate-300/80">静态图片与封面精致呈现。</p>
+                            </div>
+                            <div class="rounded-2xl border border-white/5 bg-white/5 p-4 shadow-inner shadow-cyan-500/10">
+                                <p class="font-semibold text-white">数据透视</p>
+                                <p class="text-slate-300/80">标签、分类一览无遗。</p>
+                            </div>
+                            <div class="rounded-2xl border border-white/5 bg-white/5 p-4 shadow-inner shadow-violet-500/10">
+                                <p class="font-semibold text-white">灵活导航</p>
+                                <p class="text-slate-300/80">自适应暗色与全屏切换。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 text-sm text-slate-200/80">
+                        <img src="@/assets/developer.png" class="h-14 w-auto drop-shadow-lg" alt="Login Illustration" />
+                        <div>
+                            <p class="font-semibold text-white">Weblog 博客登录</p>
+                            <p class="text-slate-300/80">Spring Boot + MyBatis Plus + Vue 3.2 + Vite 4</p>
+                        </div>
+                    </div>
                 </div>
-                <!-- 引入 Element Plus 表单组件，移动端设置宽度为 5/6，PC 端设置为 2/5 -->
-                <el-form class="w-5/6 md:w-2/5" ref="formRef" :rules="rules" :model="form">
-                    <el-form-item prop="username">
-                        <!-- 输入框组件 -->
-                        <el-input size="large" v-model="form.username" placeholder="请输入用户名" :prefix-icon="User" clearable />
-                    </el-form-item>
-                    <el-form-item prop="password">
-                        <!-- 密码框组件 -->
-                        <el-input size="large" type="password" v-model="form.password" placeholder="请输入密码"
-                            :prefix-icon="Lock" clearable show-password />
-                    </el-form-item>
-                    <el-form-item>
-                        <!-- 登录按钮，宽度设置为 100% -->
-                        <el-button class="w-full mt-2" size="large" :loading="loading" type="primary" @click="onSubmit">登录</el-button>
-                    </el-form-item>
-                </el-form>
+
+                <div class="flex flex-col justify-center rounded-2xl bg-white text-slate-900 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-100">
+                    <div class="space-y-2 px-8 pt-8 text-center">
+                        <p class="text-sm font-semibold text-indigo-500">欢迎回来</p>
+                        <h2 class="text-3xl font-bold tracking-tight">登录你的创作工作台</h2>
+                        <p class="text-sm text-slate-500">请输入账号密码开始体验全新界面。</p>
+                    </div>
+                    <div class="px-8 pt-6 pb-8">
+                        <el-form class="space-y-4" ref="formRef" :rules="rules" :model="form" label-position="top">
+                            <el-form-item prop="username" label="用户名">
+                                <el-input size="large" v-model="form.username" placeholder="请输入用户名" :prefix-icon="User" clearable class="rounded-full" />
+                            </el-form-item>
+                            <el-form-item prop="password" label="密码">
+                                <el-input size="large" type="password" v-model="form.password" placeholder="请输入密码" :prefix-icon="Lock" clearable show-password class="rounded-full" />
+                            </el-form-item>
+                            <div class="flex items-center justify-between text-xs text-slate-500">
+                                <div class="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-indigo-600 ring-1 ring-indigo-100">
+                                    <span class="h-2 w-2 rounded-full bg-indigo-400 animate-pulse"></span>
+                                    安全加密传输
+                                </div>
+                                <span>忘记密码？请联系管理员</span>
+                            </div>
+                            <el-button class="w-full rounded-full py-3 text-base" size="large" :loading="loading" type="primary" @click="onSubmit">登录</el-button>
+                        </el-form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
