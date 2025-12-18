@@ -1,25 +1,30 @@
 <template>
-    <div class="fixed overflow-y-auto bg-slate-800 h-screen text-white menu-container transition-all duration-300 shadow-2xl" :style="{ width: menuStore.menuWidth }">
-        <!-- 顶部 Logo, 指定高度为 64px, 和右边的 Header 头保持一样高 -->
-        <div class="flex items-center justify-center h-[64px]">
-            <img v-if="menuStore.menuWidth == '250px'" src="@/assets/weblog-logo.png" class="h-[60px]">
-            <img v-else src="@/assets/weblog-logo-mini.png" class="h-[60px]">
+    <div class="fixed overflow-y-auto bg-slate-900 h-screen text-white transition-all duration-300 z-50 border-r border-slate-800" 
+         :style="{ width: menuStore.menuWidth }">
+        
+        <div class="flex items-center justify-center h-[64px] border-b border-slate-800/50 bg-slate-900/50 backdrop-blur">
+            <div v-if="menuStore.menuWidth == '250px'" class="flex items-center gap-2 font-bold text-xl tracking-wider animate-fade-in-up">
+                <span class="text-indigo-500">W</span>eblog
+            </div>
+            <div v-else class="font-bold text-xl text-indigo-500">W</div>
         </div>
 
-        <!-- 下方菜单 -->
-        <el-menu :default-active="defaultActive" @select="handleSelect" :collapse="isCollapse" :collapse-transition="false">
+        <el-menu :default-active="defaultActive" @select="handleSelect" 
+                 :collapse="isCollapse" :collapse-transition="false"
+                 background-color="#0f172a" text-color="#94a3b8" active-text-color="#fff"
+                 class="border-none py-4">
+            
             <template v-for="(item, index) in menus" :key="index">
-                <el-menu-item :index="item.path">
-                    <el-icon>
-                        <!-- 动态图标 -->
+                <el-menu-item :index="item.path" class="my-1 mx-2 rounded-lg hover:bg-slate-800 transition-all duration-200">
+                    <el-icon :size="18" class="mr-2">
                         <component :is="item.icon"></component>
                     </el-icon>
-                    <span>{{ item.name }}</span>
+                    <span class="font-medium">{{ item.name }}</span>
                 </el-menu-item>
             </template>
         </el-menu>
-
-</div></template>
+    </div>
+</template>
 
 <script setup>
 import { ref, computed } from 'vue'
@@ -27,86 +32,36 @@ import { useRouter, useRoute } from 'vue-router'
 import { useMenuStore } from '@/stores/menu'
 
 const menuStore = useMenuStore()
-
 const route = useRoute()
 const router = useRouter()
-
-// 是否折叠
 const isCollapse = computed(() =>  !(menuStore.menuWidth == '250px'))
-
-// 根据路由地址判断哪个菜单被选中
 const defaultActive = ref(route.path)
 
-// 菜单选择事件
 const handleSelect = (path) => {
     router.push(path)
 }
 
 const menus = [
-    {
-        'name': '仪表盘',
-        'icon': 'Monitor',
-        'path': '/admin/index'
-    },
-    {
-        'name': '文章管理',
-        'icon': 'Document',
-        'path': '/admin/article/list',
-    },
-    {
-        'name': '分类管理',
-        'icon': 'FolderOpened',
-        'path': '/admin/category/list',
-    },
-    {
-        'name': '标签管理',
-        'icon': 'PriceTag',
-        'path': '/admin/tag/list',
-    },
-    {
-        'name': '博客设置',
-        'icon': 'Setting',
-        'path': '/admin/blog/settings',
-    },
+    { 'name': '仪表盘', 'icon': 'Monitor', 'path': '/admin/index' },
+    { 'name': '文章管理', 'icon': 'Document', 'path': '/admin/article/list' },
+    { 'name': '分类管理', 'icon': 'FolderOpened', 'path': '/admin/category/list' },
+    { 'name': '标签管理', 'icon': 'PriceTag', 'path': '/admin/tag/list' },
+    { 'name': '博客设置', 'icon': 'Setting', 'path': '/admin/blog/settings' },
 ]
 </script>
 
-<style>
-.el-menu {
-    background-color: rgb(30 41 59 / 1);
-    border-right: 0;
+<style scoped>
+/* 覆盖 Element Menu 样式以实现更高级的效果 */
+:deep(.el-menu-item.is-active) {
+    background: linear-gradient(90deg, #4f46e5 0%, #4338ca 100%);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
 }
-
-.el-sub-menu__title {
-    color: #fff;
+:deep(.el-menu-item) {
+    height: 50px;
+    line-height: 50px;
 }
-
-.el-sub-menu__title:hover {
-    background-color: #ffffff10;
+:deep(.el-menu-item:hover) {
+    background-color: #1e293b !important;
+    color: #fff !important;
 }
-
-
-.el-menu-item.is-active {
-    background-color: #409eff10;
-    color: #fff;
-}
-
-.el-menu-item.is-active:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 2px;
-    height: 100%;
-    background-color: var(--el-color-primary);
-}
-
-.el-menu-item {
-    color: #fff;
-}
-
-.el-menu-item:hover {
-    background-color: #ffffff10;
-}
-
 </style>

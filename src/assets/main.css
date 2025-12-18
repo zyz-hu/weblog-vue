@@ -16,3 +16,17 @@ body {
 [type='text']:focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus {
   box-shadow: 0 0 0 1px transparent inset!important;
 }
+
+:root {
+  --app-bg: #ffffff;
+  --app-text: #111827;
+  --sidebar-bg: #f9fafb;
+  --sidebar-border: #e5e7eb;
+}
+
+:root.dark {
+  --app-bg: #131314;
+  --app-text: #f3f4f6;
+  --sidebar-bg: #1e1f20;
+  --sidebar-border: #2d2e30;
+}

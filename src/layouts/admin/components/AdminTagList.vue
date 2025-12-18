@@ -1,95 +1,116 @@
 <template>
-    <!-- 左边：标签导航栏 -->
-    <div class="fixed top-[64px] h-[44px] px-2 right-0 z-50 flex items-center bg-white transition-all duration-300 shadow" :style="{left: menuStore.menuWidth}">
-        <el-tabs v-model="activeTab" type="card" class="demo-tabs" @tab-remove="removeTab" @tab-change="tabChange" style="min-width: 10px;">
-            <el-tab-pane v-for="item in tabList" :key="item.path" :label="item.title" :name="item.path" :closable="item.path != '/admin/index'">
-            </el-tab-pane>
-        </el-tabs>
+    <div class="flex items-center justify-between mb-4 border-b border-slate-100 dark:border-slate-700/50 pb-2">
+        
+        <div class="flex-1 overflow-hidden">
+            <el-tabs 
+                v-model="activeTab" 
+                type="card" 
+                class="admin-tabs" 
+                @tab-remove="removeTab" 
+                @tab-change="tabChange"
+            >
+                <el-tab-pane 
+                    v-for="item in tabList" 
+                    :key="item.path" 
+                    :label="item.title" 
+                    :name="item.path" 
+                    :closable="item.path != '/admin/index'"
+                >
+                </el-tab-pane>
+            </el-tabs>
+        </div>
 
-        <!-- 右侧下拉菜单 -->
-        <span class="ml-auto flex items-center justify-center h-[32px] w-[32px]">
-            <el-dropdown @command="handleCloseTab">
-                <span class="el-dropdown-link">
-                    <el-icon>
-                        <arrow-down />
-                    </el-icon>
+        <div class="ml-4 flex-shrink-0">
+            <el-dropdown @command="handleCloseTab" trigger="click">
+                <span class="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-slate-500 cursor-pointer">
+                    <el-icon class="transform rotate-90"><MoreFilled /></el-icon>
                 </span>
                 <template #dropdown>
                     <el-dropdown-menu>
-                        <el-dropdown-item command="closeOthers">关闭其他</el-dropdown-item>
-                        <el-dropdown-item command="closeAll">关闭全部</el-dropdown-item>
+                        <el-dropdown-item command="closeOthers">
+                            <el-icon><Close /></el-icon>关闭其他
+                        </el-dropdown-item>
+                        <el-dropdown-item command="closeAll">
+                            <el-icon><CircleClose /></el-icon>关闭全部
+                        </el-dropdown-item>
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>
-        </span>
+        </div>
     </div>
-    <div class="h-[44px]"></div>
 </template>
 
 <script setup>
 import { useTabList } from '@/composables/useTagList.js'
+import { MoreFilled, Close, CircleClose } from '@element-plus/icons-vue'
 
 const { menuStore, activeTab, tabList, tabChange, removeTab, handleCloseTab } = useTabList()
 </script>
 
-<style>
-.el-tabs__item {
-    font-size: 12px;
-    border: 1px solid #d8dce5!important;
-    border-radius: 3px!important;
+<style scoped>
+/* 深度选择器覆盖 Element Plus 默认样式 */
+:deep(.el-tabs__header) {
+    margin: 0;
+    border-bottom: none !important;
 }
 
-.el-tabs--card>.el-tabs__header .el-tabs__item {
-    margin-left: 0.1rem!important;
-    margin-right: 0.1rem!important;
+:deep(.el-tabs__nav) {
+    border: none !important;
 }
 
-.el-tabs__item.is-active {
-    background-color: var(--el-color-primary)!important;
-    color: #fff;
+:deep(.el-tabs__item) {
+    height: 34px;
+    line-height: 34px;
+    border: 1px solid transparent !important;
+    border-radius: 8px;
+    margin-right: 6px;
+    padding: 0 16px !important;
+    font-size: 13px;
+    color: #64748b; /* slate-500 */
+    background: transparent;
+    transition: all 0.2s;
 }
 
-.el-tabs__item.is-active::before {
-    content: "";
-    background-color: #fff;
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    position: relative;
-    margin-right: 4px;
+/* 悬停状态 */
+:deep(.el-tabs__item:hover) {
+    color: #4f46e5; /* indigo-600 */
+    background: #eef2ff; /* indigo-50 */
 }
 
-.el-tabs {
-    height: 32px;
+/* 选中状态 */
+:deep(.el-tabs__item.is-active) {
+    color: #4f46e5 !important;
+    background: #e0e7ff !important; /* indigo-100 */
+    font-weight: 600;
 }
 
-.el-tabs__header {
-    margin-bottom: 0;
+/* 选中状态下的关闭按钮 */
+:deep(.el-tabs__item.is-active .el-icon-close) {
+    color: #4f46e5;
+    width: 14px; /* 调整关闭按钮大小 */
 }
 
-.el-tabs--card>.el-tabs__header .el-tabs__nav {
-    border: 0;
+:deep(.el-tabs__item .el-icon-close:hover) {
+    background-color: #c7d2fe; /* indigo-200 */
+    color: #4338ca;
 }
 
-.el-tabs--card>.el-tabs__header .el-tabs__item {
-    height: 32px;
-    line-height: 32px;
-    border: 0;
-    background: #fff;
+/* 导航按钮（当标签过多时出现） */
+:deep(.el-tabs__nav-prev), :deep(.el-tabs__nav-next) {
+    line-height: 34px;
+    font-size: 14px;
 }
 
-.el-tabs--card>.el-tabs__header {
-    border: 0;
+/* 暗黑模式适配 */
+:global(.dark) :deep(.el-tabs__item) {
+    color: #94a3b8;
 }
-
-.el-tabs__nav-prev, .el-tabs__nav-next {
-    line-height: 35px;
+:global(.dark) :deep(.el-tabs__item:hover) {
+    color: #818cf8;
+    background: rgba(99, 102, 241, 0.1);
 }
-
-.is-disabled {
-    cursor: not-allowed;
-    color: #d1d5db;
+:global(.dark) :deep(.el-tabs__item.is-active) {
+    color: #818cf8 !important;
+    background: rgba(99, 102, 241, 0.2) !important;
 }
-
 </style>

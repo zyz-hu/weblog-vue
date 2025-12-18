@@ -1,209 +1,101 @@
 <template>
-    <header class="sticky top-0 z-10">
-        <nav class="bg-white border-gray-200 border-b dark:bg-gray-900">
-            <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-                <!-- 博客 LOGO 、博客名称 -->
-                <a href="/" class="flex items-center">
-                    <img :src="blogSettingsStore.blogSettings.logo" class="h-8 mr-3 rounded-full" alt="Flowbite Logo" />
-                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">{{
-                        blogSettingsStore.blogSettings.name }}</span>
-                </a>
-                <div class="flex items-center md:order-2">
-                    <button type="button" data-collapse-toggle="navbar-search" aria-controls="navbar-search"
-                        aria-expanded="false"
-                        class="md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 mr-1">
-                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 20 20">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                        </svg>
-                        <span class="sr-only">Search</span>
-                    </button>
-                    <div class="relative hidden mr-2 md:block">
-                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                            </svg>
-                            <span class="sr-only">Search icon</span>
-                        </div>
-                        <input type="text" id="search-navbar"
-                            class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="请输入搜索关键词...">
-                    </div>
+  <header class="sticky top-0 z-50 w-full transition-all duration-300" :class="{'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm': isScrolled, 'bg-transparent': !isScrolled}">
+    <nav class="max-w-screen-xl mx-auto px-4 sm:px-6 py-4">
+      <div class="flex items-center justify-between">
+        <a href="/" class="flex items-center gap-3 group">
+          <div class="relative w-10 h-10 overflow-hidden rounded-xl shadow-lg transform group-hover:rotate-6 transition-all duration-300">
+            <img :src="blogSettingsStore.blogSettings.logo" class="w-full h-full object-cover" alt="Logo" />
+          </div>
+          <span class="self-center text-xl font-bold whitespace-nowrap text-slate-800 dark:text-white tracking-tight group-hover:text-indigo-600 transition-colors">
+            {{ blogSettingsStore.blogSettings.name }}
+          </span>
+        </a>
 
-                    <!-- 登录 -->
-                    <div class="text-gray-900 ml-1 mr-1 hover:text-blue-700" v-if="!isLogined"
-                        @click="$router.push('/login')">登录</div>
-                    <!-- 已经登录，展示用户头像 -->
-                    <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" v-else
-                        class="text-white ml-2 mr-2 md:mr-0 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                        type="button">
-                        <!-- 用户登录头像 -->
-                        <img class="w-8 h-8 rounded-full" :src="blogSettingsStore.blogSettings.avatar" alt="user photo">
-                    </button>
-
-                    <!-- Dropdown menu -->
-                    <div id="dropdown"
-                        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
-                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-                            <li>
-                                <a @click="router.push('/admin/index')"
-                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                    <svg class="inline w-3 h-3 mb-[2px] mr-1 text-gray-700 dark:text-white"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                        viewBox="0 0 20 20">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M10 14v4m-4 1h8M1 10h18M2 1h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1Z" />
-                                    </svg>
-                                    进入后台
-                                </a>
-                            </li>
-                            <li>
-                                <a data-modal-target="popup-modal" data-modal-toggle="popup-modal"
-                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                    <svg class="inline w-3 h-3 mb-[2px] mr-1 text-gray-700 dark:text-white"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                        viewBox="0 0 16 16">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M4 8h11m0 0-4-4m4 4-4 4m-5 3H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h3" />
-                                    </svg>
-                                    退出登录
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-
-
-                    <button data-collapse-toggle="navbar-search" type="button"
-                        class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                        aria-controls="navbar-search" aria-expanded="false">
-                        <span class="sr-only">Open main menu</span>
-                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 17 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M1 1h15M1 7h15M1 13h15" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-search">
-                    <div class="relative mt-3 md:hidden">
-                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                            </svg>
-                        </div>
-                        <input type="text" id="search-navbar"
-                            class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="请输入搜索关键词...">
-                    </div>
-                    <ul
-                        class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-                        <li>
-                            <a @click="router.push('/')"
-                            :class="[currPath == '/' ? 'text-blue-700' : 'text-gray-900']"
-                                class="block py-2 pl-3 pr-4  rounded md:bg-transparent md:p-0 md:dark:text-blue-500"
-                                aria-current="page">首页</a>
-                        </li>
-                        <li>
-                            <a @click="router.push('/category/list')"
-                            :class="[currPath == '/category/list' ? 'text-blue-700' : 'text-gray-900']"
-                                class="block py-2 pl-3 pr-4 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">分类</a>
-                        </li>
-                        <li>
-                            <a @click="router.push('/tag/list')"
-                            :class="[currPath == '/tag/list' ? 'text-blue-700' : 'text-gray-900']" 
-                            class="block py-2 pl-3 pr-4 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">标签</a>
-                        </li>
-                        <li>
-                            <a @click="router.push('/archive/list')"
-                            :class="[currPath == '/archive/list' ? 'text-blue-700' : 'text-gray-900']"
-                                class="block py-2 pl-3 pr-4 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">归档</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <!-- 退出登录 -->
-    <div id="popup-modal" tabindex="-1"
-        class="fixed top-0 left-0 right-0 z-50 hidden p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-md max-h-full">
-            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                <button type="button"
-                    class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                    data-modal-hide="popup-modal">
-                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                    </svg>
-                    <span class="sr-only">Close modal</span>
-                </button>
-                <div class="p-6 text-center">
-                    <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                    </svg>
-                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">是否确定退出登录?
-                        </h3>
-                    <button @click="logout" data-modal-hide="popup-modal" type="button"
-                        class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
-                        确定
-                    </button>
-                    <button data-modal-hide="popup-modal" type="button"
-                        class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                        取消</button>
-                </div>
-            </div>
+        <div class="hidden md:flex items-center space-x-8">
+          <a v-for="(item, index) in navItems" :key="index" @click="router.push(item.path)"
+             class="text-sm font-medium transition-colors cursor-pointer relative py-2"
+             :class="[isActiveNav(item.path) ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white']">
+            {{ item.name }}
+            <span v-if="isActiveNav(item.path)" class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-600 rounded-full"></span>
+          </a>
         </div>
-    </div>
+
+        <div class="flex items-center gap-3">
+          <div class="relative hidden md:block">
+            <input type="text" 
+              class="w-40 focus:w-60 transition-all duration-300 py-1.5 pl-9 pr-4 text-sm bg-slate-100 dark:bg-slate-800 border-none rounded-full focus:ring-2 focus:ring-indigo-500/20 text-slate-700 placeholder-slate-400"
+              placeholder="搜索..." />
+            <svg class="w-4 h-4 absolute left-3 top-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+
+          <button @click="router.push('/ai-robot')" class="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-indigo-600 to-purple-500 text-white text-sm font-semibold shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2"></path><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle></svg>
+            AI 机器人
+          </button>
+
+          <div v-if="!isLogined">
+            <button @click="$router.push('/login')" class="px-5 py-2 text-sm font-medium text-white bg-slate-900 dark:bg-indigo-600 rounded-full hover:bg-slate-800 dark:hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-500/20">
+              登录
+            </button>
+          </div>
+          
+          <div v-else class="relative group">
+            <button class="flex items-center gap-2 focus:outline-none">
+              <img class="w-9 h-9 rounded-full ring-2 ring-white dark:ring-slate-700 shadow-md object-cover" :src="blogSettingsStore.blogSettings.avatar" alt="user photo">
+            </button>
+            <div class="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl py-2 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 transform origin-top-right border border-slate-100 dark:border-slate-700">
+              <a @click="router.push('/admin/index')" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer">
+                <span class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>后台管理</span>
+              </a>
+              <a @click="logout" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-slate-700 cursor-pointer">
+                <span class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>退出登录</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import { initCollapses, initDropdowns, initModals } from 'flowbite'
-import { useBlogSettingsStore } from '@/stores/blogsettings'
-import { useUserStore } from '@/stores/user'
-import { useRouter, useRoute } from 'vue-router'
-import { showMessage } from '@/composables/util'
+import { onMounted, ref, watch } from 'vue';
+import { useBlogSettingsStore } from '@/stores/blogsettings';
+import { useUserStore } from '@/stores/user';
+import { useRouter, useRoute } from 'vue-router';
+import { showMessage } from '@/composables/util';
 
-// 初始化 flowbit 相关组件
+const router = useRouter();
+const route = useRoute();
+const currPath = ref(route.path);
+const blogSettingsStore = useBlogSettingsStore();
+const userStore = useUserStore();
+const isLogined = ref(Object.keys(userStore.userInfo).length > 0);
+const isScrolled = ref(false);
+
+const navItems = [
+  { name: '首页', path: '/' },
+  { name: '分类', path: '/category/list' },
+  { name: '标签', path: '/tag/list' },
+  { name: '归档', path: '/archive/list' },
+  { name: 'AI 机器人', path: '/ai-robot' },
+];
+
+const isActiveNav = (path) => currPath.value === path || currPath.value.startsWith(path + '/');
+
 onMounted(() => {
-    initCollapses();
-    initDropdowns();
-    initModals();
-})
+  window.addEventListener('scroll', () => {
+    isScrolled.value = window.scrollY > 20;
+  });
+});
 
-const router = useRouter()
-const route = useRoute()
+watch(() => route.path, (newPath) => {
+  currPath.value = newPath;
+});
 
-// 当前路由地址
-const currPath = ref(route.path)
-
-// 引入博客设置信息 store
-const blogSettingsStore = useBlogSettingsStore()
-
-// 是否登录，通过 userStore 中的 userInfo 对象是否有数据来判断
-const userStore = useUserStore()
-// 获取 userInfo 对象所有属性名称的数组
-const keys = Object.keys(userStore.userInfo)
-// 若大于零，则表示用户已登录
-const isLogined = ref(keys.length > 0)
-
-// 退出登录
 const logout = () => {
-    userStore.logout()
-    // 标记为未登录
-    isLogined.value = false
-    showMessage('退出登录成功')
-}
+  userStore.logout();
+  isLogined.value = false;
+  showMessage('退出登录成功');
+};
 </script>

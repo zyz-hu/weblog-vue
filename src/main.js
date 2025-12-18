@@ -1,6 +1,8 @@
 import '@/assets/main.css'
 import 'animate.css';
 import 'nprogress/nprogress.css'
+import 'ant-design-vue/es/message/style/index.js'
+import 'virtual:svg-icons-register'
 
 import { createApp } from 'vue'
 // 引入全局状态管理 Pinia

@@ -1,206 +1,121 @@
 <template>
     <Header></Header>
 
-    <!-- 主内容区域 -->
-    <main class="container max-w-screen-xl mx-auto p-4 space-y-8">
-        <!-- Hero 区域 -->
-        <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-sky-50 via-white to-indigo-50 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 border border-white/60 shadow-xl shadow-indigo-100/60 dark:shadow-slate-900/40">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.2),transparent_35%),radial-gradient(circle_at_80%_10%,rgba(14,165,233,0.15),transparent_30%),radial-gradient(circle_at_20%_80%,rgba(99,102,241,0.18),transparent_35%)]"></div>
-            <div class="relative grid grid-cols-1 md:grid-cols-2 gap-6 px-8 py-10 md:px-12 md:py-14">
-                <div class="space-y-4">
-                    <p class="inline-flex items-center rounded-full bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-indigo-600 shadow-sm shadow-indigo-100 ring-1 ring-indigo-100 dark:bg-slate-800/70 dark:text-indigo-200 dark:ring-indigo-500/20">今日精选</p>
-                    <h1 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white leading-tight">探索每一篇灵感与洞见</h1>
-                    <p class="text-base text-slate-600 dark:text-slate-300">在这里发现精选文章、标签与分类，开启你的阅读旅程。我们为你准备了精心推荐的内容与流畅的浏览体验。</p>
-                    <div class="flex flex-wrap gap-3">
-                        <a href="#articles" class="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-5 py-2.5 text-white font-semibold shadow-lg shadow-indigo-200 transition hover:translate-y-[-2px] hover:bg-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
-                            立即探索
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 5l7 7-7 7" />
-                            </svg>
-                        </a>
-                        <button type="button" class="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white/80 px-4 py-2.5 text-indigo-700 font-semibold shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 dark:bg-slate-800/80 dark:border-slate-700 dark:text-indigo-200 dark:hover:border-indigo-500/40">
-                            订阅更新
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 19c3.866 0 7-2.91 7-6.5S15.866 6 12 6 5 8.91 5 12.5 8.134 19 12 19Zm0 0v2m-3 0h6" />
-                            </svg>
+    <section class="relative w-full h-[450px] flex items-center justify-center overflow-hidden bg-slate-900">
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900"></div>
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-indigo-500/30 rounded-full blur-[128px] animate-pulse"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-teal-500/20 rounded-full blur-[128px] animate-pulse" style="animation-delay: 1s;"></div>
+        
+        <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+
+        <div class="relative z-10 text-center max-w-4xl px-6 animate-fade-in-up">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-indigo-400 mb-6 tracking-tight">
+                探索代码与灵感的边界
+            </h1>
+            <p class="text-lg md:text-xl text-slate-300 font-light mb-10 max-w-2xl mx-auto leading-relaxed">
+                记录技术点滴，分享生活感悟。在这里，我们用代码构建世界，用文字温暖人心。
+            </p>
+            <div class="flex justify-center gap-4">
+                <a href="#articles" class="px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-all shadow-lg shadow-indigo-500/30 transform hover:-translate-y-1">
+                    开始阅读
+                </a>
+                <a href="https://github.com/zyz-hu" target="_blank" class="px-8 py-3 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur-sm text-white font-semibold border border-white/10 transition-all">
+                    访问 GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <main class="relative z-20 -mt-16 container max-w-screen-xl mx-auto px-4 sm:px-6 pb-20">
+        
+        <div class="grid grid-cols-12 gap-8">
+            <div class="col-span-12 lg:col-span-8 space-y-6">
+                
+                <template v-if="loading">
+                    <div v-for="i in 3" :key="i" class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm h-48 animate-pulse border border-slate-100 dark:border-slate-700"></div>
+                </template>
+
+                <template v-else>
+                    <div v-if="articles.length === 0" class="bg-white dark:bg-slate-800 rounded-2xl p-12 text-center shadow-sm border border-slate-100 dark:border-slate-700">
+                        <p class="text-slate-500 text-lg">暂无文章，博主正在努力码字中...</p>
+                    </div>
+
+                    <article v-for="(article, index) in articles" :key="index" 
+                        class="group bg-white dark:bg-slate-800 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 border border-slate-100 dark:border-slate-700/50 overflow-hidden flex flex-col md:flex-row h-auto md:h-60">
+                        
+                        <div class="md:w-5/12 w-full h-48 md:h-full relative overflow-hidden cursor-pointer bg-slate-100 dark:bg-slate-900" @click="goArticleDetailPage(article.id)">
+                            <img v-if="article.cover" :src="article.cover" 
+                                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'" />
+                            
+                            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-100 dark:from-slate-800 dark:to-slate-900" 
+                                 :style="!article.cover ? 'display:flex' : 'display:none'">
+                                <span class="text-4xl">📝</span>
+                            </div>
+
+                            <div class="absolute top-3 left-3">
+                                <span class="px-2.5 py-1 bg-white/90 dark:bg-slate-900/90 backdrop-blur text-xs font-bold uppercase tracking-wider text-indigo-600 rounded-md shadow-sm border border-indigo-100 dark:border-indigo-900/30">
+                                    {{ article.category?.name || '未分类' }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="md:w-7/12 w-full p-6 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center text-xs text-slate-400 mb-2 space-x-3">
+                                    <span class="flex items-center"><svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> {{ article.createDate }}</span>
+                                    <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                                    <span class="flex items-center"><svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg> {{ article.readNum || 0 }}</span>
+                                </div>
+                                <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-2 group-hover:text-indigo-600 transition-colors cursor-pointer line-clamp-1" @click="goArticleDetailPage(article.id)">
+                                    {{ article.title }}
+                                </h2>
+                                <p class="text-slate-500 dark:text-slate-400 text-sm line-clamp-2 leading-relaxed">
+                                    {{ article.summary || '这是一篇没有摘要的文章，点击查看详情阅读全文...' }}
+                                </p>
+                            </div>
+                            
+                            <div class="mt-4 flex items-center justify-between">
+                                <div class="flex flex-wrap gap-2">
+                                    <span v-for="tag in article.tags" :key="tag.id" @click.stop="goTagArticleListPage(tag.id, tag.name)"
+                                          class="text-xs text-slate-500 bg-slate-100 dark:bg-slate-700 dark:text-slate-300 px-2 py-1 rounded hover:bg-indigo-100 hover:text-indigo-600 cursor-pointer transition">
+                                        #{{ tag.name }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </template>
+
+                <div v-if="pages > 1" class="flex justify-center pt-8">
+                    <nav class="inline-flex shadow-sm rounded-md isolate">
+                        <button @click="getArticles(current - 1)" :disabled="current <= 1" class="relative inline-flex items-center rounded-l-md px-4 py-2 text-sm font-semibold text-gray-900 bg-white ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 disabled:opacity-50 dark:bg-slate-800 dark:text-white dark:ring-slate-700">上一页</button>
+                        <button v-for="p in pages" :key="p" @click="getArticles(p)" 
+                            :class="[p === current ? 'bg-indigo-600 text-white focus-visible:outline-indigo-600' : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:text-white dark:ring-slate-700 dark:bg-slate-800', 'relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20']">
+                            {{ p }}
                         </button>
-                    </div>
-                </div>
-                <div class="flex items-center justify-center">
-                    <div class="relative w-full max-w-md">
-                        <div class="absolute -inset-6 bg-gradient-to-br from-indigo-200/60 via-sky-100/60 to-purple-100/60 blur-3xl dark:from-indigo-500/10 dark:via-sky-500/10 dark:to-purple-500/10"></div>
-                        <div class="relative rounded-2xl border border-white/60 bg-white/80 p-6 shadow-2xl backdrop-blur-lg dark:border-slate-700/60 dark:bg-slate-900/70">
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="rounded-xl bg-gradient-to-br from-indigo-50 to-sky-50 p-4 text-sm font-semibold text-indigo-700 shadow-inner dark:from-slate-800 dark:to-slate-800/60 dark:text-indigo-200">热门标签</div>
-                                <div class="rounded-xl bg-gradient-to-br from-violet-50 to-indigo-50 p-4 text-sm font-semibold text-violet-700 shadow-inner dark:from-slate-800 dark:to-slate-800/60 dark:text-violet-200">精选分类</div>
-                                <div class="rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 p-4 text-sm font-semibold text-blue-700 shadow-inner dark:from-slate-800 dark:to-slate-800/60 dark:text-blue-200">新鲜文章</div>
-                                <div class="rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 p-4 text-sm font-semibold text-emerald-700 shadow-inner dark:from-slate-800 dark:to-slate-800/60 dark:text-emerald-200">畅销阅读</div>
-                            </div>
-                        </div>
-                    </div>
+                        <button @click="getArticles(current + 1)" :disabled="current >= pages" class="relative inline-flex items-center rounded-r-md px-4 py-2 text-sm font-semibold text-gray-900 bg-white ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 disabled:opacity-50 dark:bg-slate-800 dark:text-white dark:ring-slate-700">下一页</button>
+                    </nav>
                 </div>
             </div>
-        </section>
 
-        <!-- grid 表格布局，分为 4 列 -->
-        <div id="articles" class="grid grid-cols-1 lg:grid-cols-4 gap-7">
-            <!-- 左边栏，占用 3 列 -->
-            <div class="col-span-4 lg:col-span-3 mb-3 space-y-6">
-                <!-- 文章列表，grid 表格布局，分为 2 列 -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <template v-if="loading">
-                        <div v-for="index in 4" :key="index" class="col-span-1">
-                            <div class="h-full rounded-2xl border border-slate-100/70 bg-white/70 p-4 shadow-lg shadow-indigo-50/40 backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/70 dark:shadow-slate-900/50 animate-pulse">
-                                <div class="h-40 rounded-xl bg-slate-200 dark:bg-slate-700 mb-4"></div>
-                                <div class="flex flex-wrap gap-2 mb-3">
-                                    <span class="h-6 w-16 rounded-full bg-slate-200 dark:bg-slate-700"></span>
-                                    <span class="h-6 w-20 rounded-full bg-slate-200 dark:bg-slate-700"></span>
-                                </div>
-                                <div class="h-6 w-3/4 rounded bg-slate-200 dark:bg-slate-700 mb-3"></div>
-                                <div class="h-4 w-full rounded bg-slate-200 dark:bg-slate-700 mb-2"></div>
-                                <div class="h-4 w-2/3 rounded bg-slate-200 dark:bg-slate-700"></div>
-                            </div>
-                        </div>
-                    </template>
-                    <template v-else-if="articles.length === 0">
-                        <div class="col-span-1 md:col-span-2">
-                            <div class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white/70 p-8 text-center shadow-inner dark:border-slate-700 dark:bg-slate-900/60">
-                                <div class="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-50 text-indigo-600 shadow-sm dark:bg-indigo-500/20 dark:text-indigo-200">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8m-3 8H6" />
-                                    </svg>
-                                </div>
-                                <h3 class="text-lg font-semibold text-slate-800 dark:text-white mb-2">还没有文章</h3>
-                                <p class="text-sm text-slate-500 dark:text-slate-300 mb-4">敬请期待更多内容，或尝试刷新页面。</p>
-                                <button type="button" @click="getArticles(current)" class="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-2 text-white shadow-md transition hover:-translate-y-0.5 hover:bg-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300">
-                                    重新加载
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582M20 20v-5h-.581M4 9a8 8 0 0 1 13.657-5.657M20 15a8 8 0 0 1-13.657 5.657" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </template>
-                    <template v-else>
-                        <div v-for="(article, index) in articles" :key="index" class="col-span-1">
-                            <div class="group relative h-full overflow-hidden rounded-2xl border border-slate-100/80 bg-white/80 shadow-xl shadow-indigo-50/60 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-100/70 dark:border-slate-700 dark:bg-slate-900/70 dark:shadow-slate-900/60">
-                                <!-- 背景光晕 -->
-                                <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300 bg-gradient-to-br from-indigo-50/60 via-transparent to-sky-50/60 dark:from-indigo-500/10 dark:to-sky-500/10"></div>
-                                <!-- 文章封面 -->
-                                <a @click="goArticleDetailPage(article.id)" class="relative block cursor-pointer overflow-hidden">
-                                    <img class="h-48 w-full object-cover transition duration-500 group-hover:scale-105"
-                                        :src="article.cover" />
-                                    <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300 bg-gradient-to-t from-black/40 via-black/10 to-transparent"></div>
-                                </a>
-                                <div class="relative p-5 space-y-3">
-                                    <!-- 标签 -->
-                                    <div class="flex flex-wrap gap-2">
-                                        <span v-for="(tag, tagIndex) in article.tags" :key="tagIndex" @click="goTagArticleListPage(tag.id, tag.name)"
-                                            class="cursor-pointer rounded-full bg-gradient-to-r from-green-100 via-emerald-50 to-teal-100 px-3 py-1 text-[11px] font-semibold text-emerald-700 shadow-sm shadow-emerald-100 transition hover:-translate-y-0.5 hover:from-green-200 hover:via-emerald-100 hover:to-teal-200 dark:from-emerald-500/15 dark:via-emerald-500/10 dark:to-teal-500/15 dark:text-emerald-200">
-                                            {{ tag.name }}
-                                        </span>
-                                    </div>
-                                    <!-- 文章标题 -->
-                                    <a @click="goArticleDetailPage(article.id)" class="cursor-pointer inline-block">
-                                        <h2 class="mb-1 text-xl font-bold tracking-tight text-gray-900 transition group-hover:text-indigo-700 dark:text-white dark:group-hover:text-indigo-200">
-                                            {{ article.title }}</h2>
-                                    </a>
-                                    <!-- 文章摘要 -->
-                                    <p v-if="article.summary" class="text-sm font-normal text-gray-600 line-clamp-2 dark:text-gray-300">{{ article.summary }}</p>
-                                    <!-- 文章发布时间、所属分类 -->
-                                    <p class="flex items-center font-normal text-gray-400 text-xs md:text-sm gap-3 flex-wrap dark:text-gray-400">
-                                        <!-- 发布时间 -->
-                                        <span class="inline-flex items-center gap-1">
-                                            <svg class="inline w-4 h-4 text-gray-400 dark:text-white" aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M5 1v3m5-3v3m5-3v3M1 7h18M5 11h10M2 3h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" />
-                                            </svg>
-                                            {{ article.createDate }}
-                                        </span>
-
-                                        <!-- 所属分类 -->
-                                        <span class="inline-flex items-center gap-1">
-                                            <svg class="inline w-4 h-4 text-gray-400 dark:text-white" aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M1 5v11a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H1Zm0 0V2a1 1 0 0 1 1-1h5.443a1 1 0 0 1 .8.4l2.7 3.6H1Z" />
-                                            </svg>
-                                            <a @click="goCategoryArticleListPage(article.category.id, article.category.name)" class="cursor-pointer text-gray-400 transition hover:text-indigo-600 hover:underline dark:hover:text-indigo-300">{{ article.category.name }}</a>
-                                        </span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-                <!-- 分页 -->
-                <nav aria-label="Page navigation example" class="mt-4 flex justify-center" v-if="pages > 1">
-                    <ul class="flex items-center gap-2 text-sm font-semibold">
-                        <!-- 上一页 -->
-                        <li>
-                            <button @click="getArticles(current - 1)"
-                                class="flex items-center gap-2 rounded-full px-3 py-2 text-indigo-600 ring-1 ring-indigo-100 transition hover:-translate-y-0.5 hover:bg-indigo-50 hover:text-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 disabled:cursor-not-allowed disabled:opacity-60 dark:text-indigo-200 dark:ring-indigo-500/30 dark:hover:bg-indigo-500/10"
-                                :disabled="current <= 1"
-                                >
-                                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 6 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M5 1 1 5l4 4" />
-                                </svg>
-                                上一页
-                            </button>
-                        </li>
-                        <!-- 页码 -->
-                        <li v-for="(pageNo, index) in pages" :key="index">
-                            <button @click="getArticles(pageNo)"
-                                class="flex h-10 w-10 items-center justify-center rounded-full border border-indigo-100 bg-white text-indigo-600 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 dark:border-slate-700 dark:bg-slate-800 dark:text-indigo-200 dark:hover:border-indigo-500/40 dark:hover:bg-indigo-500/10"
-                                :class="[pageNo == current ? 'bg-indigo-600 text-white shadow-indigo-200 hover:bg-indigo-500 dark:bg-indigo-500 dark:text-white' : '']"
-                                >
-                                {{ index + 1 }}
-                            </button>
-                        </li>
-                        <!-- 下一页 -->
-                        <li>
-                            <button @click="getArticles(current + 1)"
-                                class="flex items-center gap-2 rounded-full px-3 py-2 text-indigo-600 ring-1 ring-indigo-100 transition hover:-translate-y-0.5 hover:bg-indigo-50 hover:text-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 disabled:cursor-not-allowed disabled:opacity-60 dark:text-indigo-200 dark:ring-indigo-500/30 dark:hover:bg-indigo-500/10"
-                                :disabled="current >= pages"
-                                >
-                                下一页
-                                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 6 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m1 9 4-4-4-4" />
-                                </svg>
-                            </button>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-
-
-            <!-- 右边侧边栏，占用一列 -->
-            <aside class="col-span-4 lg:col-span-1">
-                <div class="sticky top-[5.5rem] space-y-4">
-                    <!-- 博主信息 -->
+            <aside class="col-span-12 lg:col-span-4 space-y-6">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 sticky top-24">
                     <UserInfoCard></UserInfoCard>
-
-                    <!-- 分类 -->
-                    <CategoryListCard></CategoryListCard>
-
-                    <!-- 标签 -->
-                    <TagListCard></TagListCard>
+                    <div class="mt-6 border-t border-slate-100 dark:border-slate-700 pt-6">
+                        <h3 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-4">分类</h3>
+                        <CategoryListCard></CategoryListCard>
+                    </div>
+                    <div class="mt-6 border-t border-slate-100 dark:border-slate-700 pt-6">
+                        <h3 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-4">标签云</h3>
+                        <TagListCard></TagListCard>
+                    </div>
                 </div>
             </aside>
-    </div>
-
+        </div>
     </main>
 
-    <!-- 返回顶部 -->
     <ScrollToTopButton></ScrollToTopButton>
-
     <Footer></Footer>
 </template>
 
@@ -218,37 +133,24 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-// 跳转分类文章列表页
 const goCategoryArticleListPage = (id, name) => {
-    // 跳转时通过 query 携带参数（分类 ID、分类名称）
     router.push({path: '/category/article/list', query: {id, name}})
 }
 
-
-// initialize components based on data attribute selectors
 onMounted(() => {
     initTooltips();
 })
 
-// 文章集合
 const articles = ref([])
-// 加载状态
 const loading = ref(true)
-// 当前页码
 const current = ref(1)
-// 每页显示的文章数
 const size = ref(10)
-// 总文章数
 const total = ref(0)
-// 总共多少页
 const pages = ref(0)
 
-
 function getArticles(currentNo) {
-    // 上下页是否能点击判断，当要跳转上一页且页码小于 1 时，则不允许跳转；当要跳转下一页且页码大于总页数时，则不允许跳转
     if (currentNo < 1 || (pages.value > 0 && currentNo > pages.value)) return
     loading.value = true
-    // 调用分页接口渲染数据
     getArticlePageList({current: currentNo, size: size.value}).then((res) => {
         if (res.success) {
             articles.value = res.data
@@ -263,14 +165,11 @@ function getArticles(currentNo) {
 }
 getArticles(current.value)
 
-// 跳转文章详情页
 const goArticleDetailPage = (articleId) => {
     router.push('/article/' + articleId)
 }
 
-// 跳转标签文章列表页
 const goTagArticleListPage = (id, name) => {
-    // 跳转时通过 query 携带参数（标签 ID、标签名称）
     router.push({path: '/tag/article/list', query: {id, name}})
 }
 </script>
