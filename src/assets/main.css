@@ -16,6 +16,14 @@ body {
   line-height: 1.7;
 }
 
+html.ai-robot-page,
+body.ai-robot-page {
+  height: 100%;
+  overflow: hidden;
+  background: var(--app-bg);
+  color: var(--app-text);
+}
+
 [type='text']:focus,
 [type='email']:focus,
 [type='url']:focus,
@@ -50,6 +58,15 @@ select:focus {
   --sidebar-border: #1f2937;
   --card-surface: rgba(15, 23, 42, 0.9);
   --card-border: rgba(51, 65, 85, 0.8);
+}
+
+.ai-robot-page.dark {
+  --app-bg: #000000;
+  --app-text: #e5e7eb;
+  --sidebar-bg: #000000;
+  --sidebar-border: #111827;
+  --card-surface: rgba(0, 0, 0, 0.92);
+  --card-border: rgba(17, 24, 39, 0.9);
 }
 
 .glass-card {
