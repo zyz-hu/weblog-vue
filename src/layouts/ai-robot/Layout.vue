@@ -14,12 +14,23 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import Sidebar from '@/components/ai-robot/Sidebar.vue';
 
 const sidebarOpen = ref(true);
+const pageClass = 'ai-robot-page';
 
 const toggleSidebar = () => {
   sidebarOpen.value = !sidebarOpen.value;
 };
+
+onMounted(() => {
+  document.documentElement.classList.add(pageClass);
+  document.body.classList.add(pageClass);
+});
+
+onBeforeUnmount(() => {
+  document.documentElement.classList.remove(pageClass);
+  document.body.classList.remove(pageClass);
+});
 </script>

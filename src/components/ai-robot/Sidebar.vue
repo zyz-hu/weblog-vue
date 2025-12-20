@@ -46,7 +46,7 @@
       </div>
     </div>
 
-    <div class="p-4 border-t border-gray-200 dark:border-gray-800" style="border-color: var(--sidebar-border);">
+    <div class="mt-auto p-4 border-t border-gray-200 dark:border-gray-800" style="border-color: var(--sidebar-border);">
       <button
         @click="toggleTheme"
         class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-[#2f2f2f] transition-colors"

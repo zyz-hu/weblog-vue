@@ -1,10 +1,10 @@
 <template>
   <Layout>
     <template #main-content>
-      <div class="h-full flex flex-col relative w-full max-w-full">
+      <div class="h-full flex flex-col w-full max-w-full">
         <div class="flex-1 overflow-y-auto scroll-smooth custom-scrollbar w-full" ref="chatContainer">
-          <div class="max-w-3xl mx-auto pt-10 pb-60 px-4 md:px-6 w-full flex flex-col gap-8">
-            <div v-if="chatList.length === 0" class="text-center mt-32 opacity-40 select-none transition-opacity duration-300">
+          <div class="max-w-3xl mx-auto pt-6 pb-10 px-4 md:px-6 w-full flex flex-col gap-8">
+            <div v-if="chatList.length === 0" class="text-center mt-24 opacity-40 select-none transition-opacity duration-300">
               <SvgIcon name="ai-robot-logo" customCss="w-20 h-20 mx-auto mb-6 text-gray-300 dark:text-gray-600 transition-colors duration-300" />
               <p class="text-xl font-medium text-gray-400 transition-colors duration-300">你好，我是周元智 AI</p>
             </div>
@@ -51,23 +51,16 @@
           </div>
         </div>
 
-        <div class="absolute bottom-0 left-0 w-full z-20">
-          <div 
-            class="h-16 w-full pointer-events-none bg-white dark:bg-[#131314] transition-colors duration-300"
-            style="mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0) 100%); -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0) 100%);"
-          ></div>
-          
-          <div class="bg-white dark:bg-[#131314] px-4 pb-8 pt-2 transition-colors duration-300">
-            <div class="max-w-3xl mx-auto">
-              <ChatInputBox
-                v-model="message"
-                :loading="isGlobalLoading"
-                @sendMessage="sendMessage"
-                @stopGeneration="handleStopGeneration"
-              />
-              <div class="text-center text-[11px] text-gray-400 dark:text-gray-600 mt-3 select-none transition-colors duration-300">
-                AI 生成内容可能不准确，请仔细甄别
-              </div>
+        <div class="shrink-0 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-black px-4 pb-8 pt-3 transition-colors duration-300">
+          <div class="max-w-3xl mx-auto">
+            <ChatInputBox
+              v-model="message"
+              :loading="isGlobalLoading"
+              @sendMessage="sendMessage"
+              @stopGeneration="handleStopGeneration"
+            />
+            <div class="text-center text-[11px] text-gray-400 dark:text-gray-600 mt-3 select-none transition-colors duration-300">
+              AI 生成内容可能不准确，请仔细甄别
             </div>
           </div>
         </div>
