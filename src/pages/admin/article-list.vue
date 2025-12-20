@@ -1,18 +1,18 @@
 <template>
     <div>
         <el-card shadow="never" class="mb-5">
-            <div class="flex items-center">
-                <el-text>文章标题</el-text>
-                <div class="ml-3 w-52 mr-5"><el-input v-model="searchArticleTitle" placeholder="请输入（模糊查询）" /></div>
+            <div class="flex flex-wrap items-center gap-4">
+                <el-text class="text-slate-600">文章标题</el-text>
+                <el-input v-model="searchArticleTitle" placeholder="请输入（模糊查询）" class="w-60" />
 
-                <el-text>创建日期</el-text>
-                <div class="ml-3 w-30 mr-5">
-                    <el-date-picker v-model="pickDate" type="daterange" range-separator="至" start-placeholder="开始时间"
-                        end-placeholder="结束时间" size="default" :shortcuts="shortcuts" @change="datepickerChange" />
+                <el-text class="text-slate-600">创建日期</el-text>
+                <el-date-picker v-model="pickDate" type="daterange" range-separator="至" start-placeholder="开始时间"
+                        end-placeholder="结束时间" size="default" :shortcuts="shortcuts" @change="datepickerChange" class="w-80" />
+
+                <div class="flex items-center gap-2 ml-auto">
+                    <el-button type="primary" :icon="Search" @click="getTableData">查询</el-button>
+                    <el-button :icon="RefreshRight" @click="reset">重置</el-button>
                 </div>
-
-                <el-button type="primary" class="ml-3" :icon="Search" @click="getTableData">查询</el-button>
-                <el-button class="ml-3" :icon="RefreshRight" @click="reset">重置</el-button>
             </div>
         </el-card>
 
@@ -25,7 +25,7 @@
                     写文章</el-button>
             </div>
 
-            <el-table :data="tableData" border stripe style="width: 100%" v-loading="tableLoading">
+            <el-table :data="tableData" border stripe style="width: 100%" v-loading="tableLoading" class="admin-table">
                 <el-table-column prop="id" label="ID" width="50" />
                 <el-table-column prop="title" label="标题" width="380" />
                 <el-table-column prop="cover" label="封面" width="180">
@@ -88,7 +88,20 @@
                         clearable />
                 </el-form-item>
                 <el-form-item label="内容" prop="content">
-                    <MdEditor v-model="form.content" @onUploadImg="onUploadImg" editorId="publishArticleEditor" style="height: calc(100vh - 260px);"/>
+                    <div class="flex items-center justify-between mb-2 gap-2">
+                        <el-text type="info" size="small">选中要润色的文字优先处理，未选中则润色全文（快捷键：Ctrl + Shift + P）。</el-text>
+                        <div class="flex items-center gap-2">
+                            <el-input v-model="polishPrompt" size="small" placeholder="可选：自定义润色提示词" clearable style="width: 260px" />
+                            <el-select v-model="polishModelName" size="small" placeholder="选择模型" style="width: 180px">
+                                <el-option v-for="item in polishModelOptions" :key="item.name" :label="item.description || item.name" :value="item.name" />
+                            </el-select>
+                            <el-button type="success" plain :loading="polishing" @click="triggerPolish('publish')">AI润色</el-button>
+                        </div>
+                    </div>
+                    <div v-if="polishing" class="mb-2 text-xs text-gray-500 bg-gray-50 p-2 rounded border border-dashed border-gray-200">
+                        正在润色中（流式）：{{ polishPreview || '...' }}
+                    </div>
+                    <MdEditor v-model="form.content" @onUploadImg="onUploadImg" editorId="publishArticleEditor" style="height: calc(100vh - 260px);" />
                 </el-form-item>
                 <el-form-item label="封面" prop="cover">
                     <el-upload class="avatar-uploader cover-drop" action="#" :on-change="handleCoverChange" :auto-upload="false"
@@ -143,6 +156,19 @@
                         show-word-limit clearable />
                 </el-form-item>
                 <el-form-item label="内容" prop="content">
+                    <div class="flex items-center justify-between mb-2 gap-2">
+                        <el-text type="info" size="small">选中要润色的文字优先处理，未选中则润色全文（快捷键：Ctrl + Shift + P）。</el-text>
+                        <div class="flex items-center gap-2">
+                            <el-input v-model="polishPrompt" size="small" placeholder="可选：自定义润色提示词" clearable style="width: 260px" />
+                            <el-select v-model="polishModelName" size="small" placeholder="选择模型" style="width: 180px">
+                                <el-option v-for="item in polishModelOptions" :key="item.name" :label="item.description || item.name" :value="item.name" />
+                            </el-select>
+                            <el-button type="success" plain :loading="polishing" @click="triggerPolish('update')">AI润色</el-button>
+                        </div>
+                    </div>
+                    <div v-if="polishing" class="mb-2 text-xs text-gray-500 bg-gray-50 p-2 rounded border border-dashed border-gray-200">
+                        正在润色中（流式）：{{ polishPreview || '...' }}
+                    </div>
                     <MdEditor v-model="updateArticleForm.content" @onUploadImg="onUploadImg"
                         editorId="updateArticleEditor" style="height: calc(100vh - 260px);" />
                 </el-form-item>
@@ -178,7 +204,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, onBeforeUnmount, computed, watch } from 'vue'
 import { Search, RefreshRight } from '@element-plus/icons-vue'
 import { getArticlePageList, deleteArticle, publishArticle, getArticleDetail, updateArticle } from '@/api/admin/article'
 import { uploadFile } from '@/api/admin/file'
@@ -189,6 +215,8 @@ import { showMessage, showModel } from '@/composables/util'
 import { MdEditor } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
 import { useRouter } from 'vue-router'
+import { fetchEventSource } from '@microsoft/fetch-event-source'
+import { useAiChatStore } from '@/stores/ai-robot/chat'
 
 const router = useRouter()
 
@@ -333,6 +361,19 @@ const updateArticleForm = reactive({
     summary: ""
 })
 
+// AI 润色配置
+const polishing = ref(false)
+const polishPreview = ref('')
+const polishPrompt = ref('请润色以下内容，保持原意、逻辑清晰并提升可读性。')
+const aiChatStore = useAiChatStore()
+const polishModelName = ref(aiChatStore.selectedModel?.name || aiChatStore.models?.[0]?.name || 'deepseek-chat')
+watch(() => aiChatStore.selectedModel?.name, (val) => {
+    if (val) polishModelName.value = val
+})
+const polishModelOptions = computed(() => aiChatStore.models || [])
+const currentModelConfig = computed(() => polishModelOptions.value.find((m) => m.name === polishModelName.value) || aiChatStore.selectedModel || polishModelOptions.value[0])
+const polishTemperature = computed(() => currentModelConfig.value?.temperature ?? 0.7)
+
 // 表单校验规则
 const rules = {
     title: [
@@ -403,6 +444,162 @@ const onUploadImg = async (files, callback) => {
         })
     );
 }
+
+const getEditorContext = (target) => {
+    if (target === 'update') {
+        return {
+            editorId: 'updateArticleEditor',
+            content: updateArticleForm.content,
+            setContent: (val) => updateArticleForm.content = val
+        }
+    }
+    return {
+        editorId: 'publishArticleEditor',
+        content: form.content,
+        setContent: (val) => form.content = val
+    }
+}
+
+const getEditorSelection = (editorId) => {
+    const editorEl = document.getElementById(editorId)
+    const textarea = editorEl ? editorEl.querySelector('textarea') : null
+    if (textarea && textarea.selectionStart !== textarea.selectionEnd) {
+        const start = textarea.selectionStart
+        const end = textarea.selectionEnd
+        return { text: textarea.value.slice(start, end), start, end }
+    }
+    const selection = window.getSelection()
+    if (selection && selection.toString() && editorEl && editorEl.contains(selection.anchorNode)) {
+        return { text: selection.toString(), start: null, end: null }
+    }
+    return { text: '', start: null, end: null }
+}
+
+const applyPolishedText = (ctx, selection, polishedText) => {
+    const source = ctx.content || ''
+    let nextContent = polishedText
+    if (selection?.text) {
+        if (selection.start !== null && selection.end !== null) {
+            nextContent = source.slice(0, selection.start) + polishedText + source.slice(selection.end)
+        } else if (source.includes(selection.text)) {
+            nextContent = source.replace(selection.text, polishedText)
+        }
+    }
+    ctx.setContent(nextContent)
+}
+
+const runPolishStream = (article, prompt) => {
+    return new Promise((resolve, reject) => {
+        polishPreview.value = ''
+        let result = ''
+        let finished = false
+        fetchEventSource('/robot/chat/polish', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                article,
+                prompt,
+                modelName: polishModelName.value,
+                temperature: polishTemperature.value,
+            }),
+            openWhenHidden: true,
+            onmessage(ev) {
+                if (!ev?.data) {
+                    return
+                }
+                try {
+                    const data = JSON.parse(ev.data)
+                    if (data.type === 'ping') {
+                        return
+                    }
+                    if (data.type === 'content') {
+                        result += data.v || ''
+                        polishPreview.value = result
+                    }
+                } catch (err) {
+                    console.error('parse polish chunk error', err)
+                }
+            },
+            onclose() {
+                finished = true
+                resolve(result)
+            },
+            onerror(err) {
+                finished = true
+                reject(err)
+            },
+        }).then(() => {
+            if (!finished) {
+                resolve(result)
+            }
+        }).catch((err) => {
+            if (!finished) {
+                reject(err)
+            }
+        })
+    })
+}
+
+const triggerPolish = async (target = 'publish', presetSelection = null) => {
+    if (polishing.value) {
+        showMessage('正在润色中，请稍候', 'info')
+        return
+    }
+    const ctx = getEditorContext(target)
+    const selection = presetSelection || getEditorSelection(ctx.editorId)
+    const targetText = selection.text || ctx.content || ''
+    if (!targetText || targetText.trim() === '') {
+        showMessage('没有可润色的内容', 'warning')
+        return
+    }
+    polishing.value = true
+    try {
+        const polished = await runPolishStream(targetText, polishPrompt.value)
+        if (!polished) {
+            showMessage('AI 未返回结果', 'warning')
+            return
+        }
+        applyPolishedText(ctx, selection, polished)
+        showMessage('润色完成，已替换内容')
+    } catch (err) {
+        console.error(err)
+        showMessage('润色失败，请稍后重试', 'error')
+    } finally {
+        polishing.value = false
+        polishPreview.value = ''
+    }
+}
+
+const handlePolishShortcut = (event) => {
+    if (!(event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'p')) {
+        return
+    }
+    const target = isArticleUpdateEditorShow.value ? 'update' : (isArticlePublishEditorShow.value ? 'publish' : null)
+    if (!target) {
+        return
+    }
+    const ctx = getEditorContext(target)
+    const selection = getEditorSelection(ctx.editorId)
+    const candidate = selection.text || ctx.content || ''
+    if (!candidate || candidate.trim() === '') {
+        showMessage('没有可润色的内容', 'warning')
+        return
+    }
+    event.preventDefault()
+    showModel('是否润色选中的内容？', 'info', 'AI润色').then(() => {
+        triggerPolish(target, selection)
+    })
+}
+
+onMounted(() => {
+    window.addEventListener('keydown', handlePolishShortcut)
+})
+
+onBeforeUnmount(() => {
+    window.removeEventListener('keydown', handlePolishShortcut)
+})
 
 // 文章分类
 const categories = ref([])
@@ -534,6 +731,26 @@ const goArticleDetailPage = (articleId) => {
 </script>
 
 <style scoped>
+:deep(.el-card) {
+    border-radius: 18px;
+    border: 1px solid #e2e8f0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(244, 247, 255, 0.92));
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
+}
+
+:deep(.el-card__body) {
+    padding: 18px;
+}
+
+.admin-table :deep(.el-table) {
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.admin-table :deep(.el-table__header-wrapper) {
+    background: #f8fafc;
+}
+
 /* 封面图片样式 */
 .avatar-uploader .avatar {
     width: 200px;

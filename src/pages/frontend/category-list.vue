@@ -1,41 +1,40 @@
 <template>
-    <Header></Header>
+    <div class="min-h-screen flex flex-col">
+        <Header></Header>
 
-    <!-- 主内容区域 -->
-    <main class="container max-w-screen-xl mx-auto p-4">
-        <!-- grid 表格布局，分为 4 列 -->
-        <div class="grid grid-cols-4 gap-7">
-            <!-- 左边栏，占用 3 列 -->
-            <div class="col-span-4 md:col-span-3 mb-3">
-                <!-- 分类列表 -->
-                <CategoryListCard></CategoryListCard>
+        <section class="relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-indigo-600 via-slate-900 to-indigo-600 opacity-90"></div>
+            <div class="page-shell relative z-10 py-12">
+                <p class="text-xs uppercase tracking-[0.35em] text-white/70 mb-2">Categories</p>
+                <h1 class="text-3xl font-extrabold text-white mb-3">分类</h1>
+                <p class="text-white/80 max-w-2xl">用分类把内容整理好，就像整理桌面一样舒服。</p>
             </div>
+        </section>
 
-            <!-- 右边侧边栏，占用一列 -->
-            <aside class="col-span-4 md:col-span-1">
-                <div class="sticky top-[5.5rem]">
-                    <!-- 博主信息 -->
-                    <UserInfoCard></UserInfoCard>
-
-                    <!-- 标签 -->
-                    <TagListCard></TagListCard>
+        <main class="page-shell -mt-8 pb-16 relative z-10 flex-1">
+            <div class="grid grid-cols-12 gap-8">
+                <div class="col-span-12 lg:col-span-8 space-y-4">
+                    <CategoryListCard></CategoryListCard>
                 </div>
-            </aside>
-        </div>
 
-    </main>
+                <aside class="col-span-12 lg:col-span-4 space-y-4">
+                    <UserInfoCard></UserInfoCard>
+                    <TagListCard></TagListCard>
+                </aside>
+            </div>
+        </main>
 
-    <!-- 返回顶部 -->
-    <ScrollToTopButton></ScrollToTopButton>
+        <ScrollToTopButton></ScrollToTopButton>
 
-    <Footer></Footer>
+        <Footer class="mt-auto"></Footer>
+    </div>
 </template>
 
 <script setup>
-import Header from '@/layouts/frontend/components/Header.vue'
-import Footer from '@/layouts/frontend/components/Footer.vue'
-import UserInfoCard from '@/layouts/frontend/components/UserInfoCard.vue'
-import TagListCard from '@/layouts/frontend/components/TagListCard.vue'
-import CategoryListCard from '@/layouts/frontend/components/CategoryListCard.vue'
-import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
+import Header from '@/layouts/frontend/components/Header.vue';
+import Footer from '@/layouts/frontend/components/Footer.vue';
+import UserInfoCard from '@/layouts/frontend/components/UserInfoCard.vue';
+import TagListCard from '@/layouts/frontend/components/TagListCard.vue';
+import CategoryListCard from '@/layouts/frontend/components/CategoryListCard.vue';
+import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue';
 </script>

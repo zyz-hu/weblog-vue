@@ -1,32 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  font-family: -apple-system-font,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Hiragino Sans GB,Microsoft YaHei UI,Microsoft YaHei,Arial,sans-serif;
-  color: #4c4e4d;
+  font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  color: #0f172a;
   font-size: 16px;
-  background: radial-gradient(circle at 20% 20%, #e0f2fe 0, rgba(224, 242, 254, 0) 35%),
-    radial-gradient(circle at 80% 0, #e0e7ff 0, rgba(224, 231, 255, 0) 40%),
-    radial-gradient(circle at 50% 80%, #ede9fe 0, rgba(237, 233, 254, 0) 45%),
-    #f6f7fb;
-  line-height: 1.6;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.08) 0, rgba(99, 102, 241, 0) 30%),
+    radial-gradient(circle at 92% 12%, rgba(14, 165, 233, 0.12) 0, rgba(14, 165, 233, 0) 34%),
+    radial-gradient(circle at 30% 80%, rgba(45, 212, 191, 0.1) 0, rgba(45, 212, 191, 0) 32%),
+    #f9fafb;
+  line-height: 1.7;
 }
 
-[type='text']:focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus {
-  box-shadow: 0 0 0 1px transparent inset!important;
+[type='text']:focus,
+[type='email']:focus,
+[type='url']:focus,
+[type='password']:focus,
+[type='number']:focus,
+[type='date']:focus,
+[type='datetime-local']:focus,
+[type='month']:focus,
+[type='search']:focus,
+[type='tel']:focus,
+[type='time']:focus,
+[type='week']:focus,
+[multiple]:focus,
+textarea:focus,
+select:focus {
+  box-shadow: 0 0 0 1px transparent inset !important;
 }
 
 :root {
   --app-bg: #ffffff;
-  --app-text: #111827;
-  --sidebar-bg: #f9fafb;
-  --sidebar-border: #e5e7eb;
+  --app-text: #0f172a;
+  --sidebar-bg: #f8fafc;
+  --sidebar-border: #e2e8f0;
+  --card-surface: rgba(255, 255, 255, 0.9);
+  --card-border: rgba(226, 232, 240, 0.9);
 }
 
 :root.dark {
-  --app-bg: #131314;
-  --app-text: #f3f4f6;
-  --sidebar-bg: #1e1f20;
-  --sidebar-border: #2d2e30;
+  --app-bg: #0b1220;
+  --app-text: #e2e8f0;
+  --sidebar-bg: #0f172a;
+  --sidebar-border: #1f2937;
+  --card-surface: rgba(15, 23, 42, 0.9);
+  --card-border: rgba(51, 65, 85, 0.8);
+}
+
+.glass-card {
+  border-radius: 22px;
+  background: var(--card-surface);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.06);
+  backdrop-filter: blur(12px);
+}
+
+.page-shell {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.75rem 2.25rem;
+}
+
+.section-title {
+  @apply text-xs font-semibold tracking-[0.2em] uppercase text-slate-500;
+}
+
+.stream-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
 }

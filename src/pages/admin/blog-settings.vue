@@ -70,15 +70,31 @@
                 </el-form-item>
             </el-form>
         </el-card>
+
+        <el-card shadow="never" class="mt-5">
+            <h4 class="font-bold mb-4">AI 设置</h4>
+            <el-form label-width="160px">
+                <el-form-item label="默认笔记 AI 模型">
+                    <div class="flex items-center gap-3">
+                        <el-select v-model="noteModelName" placeholder="选择模型" style="width: 240px">
+                            <el-option v-for="item in noteModelOptions" :key="item.name" :label="item.description || item.name" :value="item.name" />
+                        </el-select>
+                        <el-button type="primary" @click="saveNoteModel">保存</el-button>
+                        <el-text type="info" size="small">保存后，文章编辑的润色默认使用该模型（本地存储）。</el-text>
+                    </div>
+                </el-form-item>
+            </el-form>
+        </el-card>
     </div>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import { Check, Close } from '@element-plus/icons-vue'
 import { getBlogSettingsDetail, updateBlogSettings } from '@/api/admin/blogsettings'
 import { uploadFile } from '@/api/admin/file'
 import { showMessage } from '@/composables/util'
+import { useAiChatStore } from '@/stores/ai-robot/chat'
 
 // 是否开启 GitHub
 const isGithubChecked = ref(false)
@@ -105,6 +121,11 @@ const form = reactive({
     zhihuHomepage: '',
     csdnHomepage: '',
 })
+
+// AI 笔记默认模型（仅前端本地持久化）
+const aiChatStore = useAiChatStore()
+const noteModelName = ref(aiChatStore.selectedModel?.name || aiChatStore.models?.[0]?.name || 'deepseek-chat')
+const noteModelOptions = computed(() => aiChatStore.models || [])
 
 // 规则校验
 const rules = {
@@ -178,6 +199,16 @@ function initBlogSettings() {
     })
 }
 initBlogSettings()
+
+const saveNoteModel = () => {
+    const model = noteModelOptions.value.find((m) => m.name === noteModelName.value)
+    if (!model) {
+        showMessage('请选择模型', 'warning')
+        return
+    }
+    aiChatStore.updateSelectedModel(model)
+    showMessage('默认笔记 AI 模型已更新')
+}
 
 // 上传 logo 图片
 const handleLogoChange = (file) => {
